@@ -12,10 +12,11 @@ A Java console application that detects whether monitored files have changed by 
 - List and remove monitored files.
 - Persist file paths and hashes between application restarts.
 - Handle invalid input and inaccessible paths with user-friendly messages.
+- Update a file's baseline hash after an authorized change.
 
 ## How it works
 
-When a file is added, the application calculates its SHA-256 hash and stores it as the original hash. During an integrity check, the application calculates a new hash for the same file. Matching hashes mean the file is unchanged; different hashes mean it has been modified.
+When a file is added, the application calculates its SHA-256 hash and stores it as the original hash. During an integrity check, the application calculates a new hash for the same file. Matching hashes mean the file is unchanged; different hashes mean it has been modified. When a modification is authorized, the stored baseline can be updated to the file's current hash.
 
 ## Project structure
 
@@ -50,4 +51,10 @@ When a file is added, the application calculates its SHA-256 hash and stores it 
 unchanged.txt is unchanged.
 modified.txt has been modified.
 deleted.txt is missing or inaccessible.
+```
+
+```text
+The file has been modified.
+Baseline hash updated for baseline-text.txt.
+The file is unchanged.
 ```
