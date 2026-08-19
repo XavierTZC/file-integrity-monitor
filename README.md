@@ -4,12 +4,14 @@ A Java console application that detects whether monitored files have changed by 
 
 ## Features
 
-- Add a file to the monitored list.
-- Calculate and store the file's original SHA-256 hash.
-- Check whether a monitored file has been modified.
+- Add files to the monitored list.
+- Calculate and store original SHA-256 hashes.
+- Check the integrity of one monitored file.
+- Check all monitored files in a single scan.
+- Detect modified, missing, and inaccessible files.
 - List and remove monitored files.
-- Persist monitored file paths and hashes between application restarts.
-- Handle invalid menu input and inaccessible file paths with user-friendly messages.
+- Persist file paths and hashes between application restarts.
+- Handle invalid input and inaccessible paths with user-friendly messages.
 
 ## How it works
 
@@ -41,3 +43,11 @@ When a file is added, the application calculates its SHA-256 hash and stores it 
 
 - `monitored-files.txt` is created automatically to store local monitoring data and is intentionally excluded from Git.
 - This is an educational integrity-monitoring project. It reports changes; it does not prevent, repair, or remove them.
+
+## Example output
+
+```text
+unchanged.txt is unchanged.
+modified.txt has been modified.
+deleted.txt is missing or inaccessible.
+```
