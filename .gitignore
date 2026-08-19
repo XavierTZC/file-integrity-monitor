@@ -1,0 +1,12 @@
+# NetBeans build output
+/build/
+/dist/
+
+# NetBeans local settings
+/nbproject/private/
+
+# Application-generated local data
+/monitored-files.txt
+
+# Compiled Java files
+*.class
