@@ -10,3 +10,8 @@
 
 # Compiled Java files
 *.class
+
+
+/modified.txt
+/unchanged.txt
+/deleted.txt
