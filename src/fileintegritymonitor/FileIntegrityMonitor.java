@@ -18,13 +18,14 @@ public class FileIntegrityMonitor {
                                1. Add file
                                2. List monitored files
                                3. Check file integrity
-                               4. Remove file
-                               5. Exit
+                               4. Check all files integrity
+                               5. Remove file
+                               6. Exit
                                """);
             
-            System.out.println("Choose our service from (1-5)");
+            System.out.println("Choose our service from (1-6)");
             if (!sc.hasNextInt()) {
-                System.out.println("Invalid choice. Please enter a number from 1 to 5.");
+                System.out.println("Invalid choice. Please enter a number from 1 to 6.");
                 sc.nextLine();
                 continue;
             }
@@ -49,7 +50,8 @@ public class FileIntegrityMonitor {
                                     System.out.println("Unable to process that file. Check the path and try again.");
                                 }
                 }
-                case 4 -> {System.out.println("Enter your file name");
+                case 4 -> fileMonitorManager.checkAllFiles();
+                case 5 -> {System.out.println("Enter your file name");
                                 String filePath = sc.nextLine();
                                 try{
                                     fileMonitorManager.removeFile(filePath);
@@ -57,9 +59,10 @@ public class FileIntegrityMonitor {
                                     System.out.println("Unable to process that file. Check the path and try again.");
                                 }
                 }
-                case 5 -> running = false;
+                case 6 ->  {System.out.println("Exiting File Integrity Monitor.");
+                           running = false;}
                 
-                default -> System.out.println("Invalid choice. Please enter a number from 1 to 5.");
+                default -> System.out.println("Invalid choice. Please enter a number from 1 to 6.");
             }
                     
         }

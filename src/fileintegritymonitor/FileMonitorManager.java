@@ -81,5 +81,28 @@ public class FileMonitorManager {
         System.out.println("File is not found in the list.");
     }
     
+    public void checkAllFiles() {
+        if (fileList.isEmpty()) {
+            System.out.println("There are no monitored files.");
+            return;
+        }
+
+        for (MonitoredFile oneFile : fileList) {
+            String filePath = oneFile.getFilePath();
+
+            try {
+                String hash = HashUtility.calculateSHA256(filePath);
+
+                if (oneFile.getOriginalHash().equals(hash)) {
+                    System.out.println(filePath + " is unchanged.");
+                } else {
+                    System.out.println(filePath + " has been modified.");
+                }
+
+            } catch (Exception e) {
+                System.out.println(filePath + " is missing or inaccessible.");
+            }
+        }
+    }
 }
 
