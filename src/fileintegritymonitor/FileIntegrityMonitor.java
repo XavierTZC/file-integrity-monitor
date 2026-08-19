@@ -19,13 +19,14 @@ public class FileIntegrityMonitor {
                                2. List monitored files
                                3. Check file integrity
                                4. Check all files integrity
-                               5. Remove file
-                               6. Exit
+                               5. Update file baseline
+                               6. Remove file
+                               7. Exit
                                """);
             
-            System.out.println("Choose our service from (1-6)");
+            System.out.println("Choose our service from (1-7)");
             if (!sc.hasNextInt()) {
-                System.out.println("Invalid choice. Please enter a number from 1 to 6.");
+                System.out.println("Invalid choice. Please enter a number from 1 to 7.");
                 sc.nextLine();
                 continue;
             }
@@ -54,15 +55,23 @@ public class FileIntegrityMonitor {
                 case 5 -> {System.out.println("Enter your file name");
                                 String filePath = sc.nextLine();
                                 try{
+                                    fileMonitorManager.updateFileHash(filePath);
+                                }catch (Exception e){       
+                                    System.out.println("Unable to process that file. Check the path and try again.");
+                                }
+                }
+                case 6 -> {System.out.println("Enter your file name");
+                                String filePath = sc.nextLine();
+                                try{
                                     fileMonitorManager.removeFile(filePath);
                                 }catch (Exception e){
                                     System.out.println("Unable to process that file. Check the path and try again.");
                                 }
                 }
-                case 6 ->  {System.out.println("Exiting File Integrity Monitor.");
+                case 7 ->  {System.out.println("Exiting File Integrity Monitor.");
                            running = false;}
                 
-                default -> System.out.println("Invalid choice. Please enter a number from 1 to 6.");
+                default -> System.out.println("Invalid choice. Please enter a number from 1 to 7.");
             }
                     
         }

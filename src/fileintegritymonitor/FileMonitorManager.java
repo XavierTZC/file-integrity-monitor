@@ -104,5 +104,23 @@ public class FileMonitorManager {
             }
         }
     }
+    
+    public void updateFileHash(String filePath) throws Exception{
+        
+        for (MonitoredFile oneFile : fileList){
+            
+            if(oneFile.getFilePath().equals(filePath)){
+                
+                String hash = HashUtility.calculateSHA256(filePath);
+                oneFile.setOriginalHash(hash);
+                StorageUtility.saveFiles(fileList);
+                
+                System.out.println("The file has been updated for " + filePath + ".");
+                return;
+            }
+        }
+        
+        System.out.println("The file is not in the monitored list.");
+    }
 }
 
