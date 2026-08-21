@@ -27,22 +27,36 @@ When a file is added, the application calculates its SHA-256 hash and stores it 
 | `MonitoredFile` | Stores a file path and its original hash |
 | `HashUtility` | Calculates SHA-256 file hashes |
 | `StorageUtility` | Saves and reloads monitored files locally |
+| `HashUtilityTest` | Verifies SHA-256 hashing behaviour using JUnit 5 |
 
 ## Requirements
 
-- Java 25 (the project is configured for Java 25)
-- Apache NetBeans, or another Java IDE that supports Ant projects
+- JDK 25 or newer
+- Apache Maven 3.9 or newer
 
-## Running the project
+Apache NetBeans is optional. The project follows Maven's standard directory layout and can be built from any compatible IDE or terminal.
+
+## Building and running
 
 1. Clone or download this repository.
-2. Open the project in Apache NetBeans.
-3. Run `FileIntegrityMonitor.java`.
-4. Select an option from the console menu and enter a path to a file you own or are authorized to monitor.
+2. Open a terminal in the project directory.
+3. Build and test the project:
+
+   ```text
+   mvn clean package
+   ```
+
+4. Run the packaged application:
+
+   ```text
+   java -jar target/file-integrity-monitor-1.0.0-SNAPSHOT.jar
+   ```
+
+5. Select an option from the console menu and enter a path to a file you own or are authorized to monitor.
 
 ## Testing
 
-The project includes unit tests for `HashUtility` using JUnit 4.
+The project includes JUnit 5 unit tests for `HashUtility`.
 
 The tests verify that:
 
@@ -51,13 +65,13 @@ The tests verify that:
 - Modifying file contents produces a different hash.
 - Hashing a missing file throws the expected exception.
 
-To run the tests in Apache NetBeans:
+Run all tests with:
 
-1. Expand **Test Packages**.
-2. Right-click `HashUtilityTest.java`.
-3. Select **Test File**.
+```text
+mvn test
+```
 
-A successful run should report that all four tests passed.
+A successful run reports four tests with no failures or errors.
 
 ## Notes
 

@@ -1,6 +1,7 @@
 # NetBeans build output
 /build/
 /dist/
+/target/
 
 # NetBeans local settings
 /nbproject/private/
