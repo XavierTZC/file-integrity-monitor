@@ -1,5 +1,7 @@
 # File Integrity Monitor
 
+[![Maven CI](https://github.com/XavierTZC/file-integrity-monitor/actions/workflows/maven.yml/badge.svg)](https://github.com/XavierTZC/file-integrity-monitor/actions/workflows/maven.yml)
+
 A Java console application that detects whether monitored files have changed by comparing SHA-256 hashes.
 
 ## Features
