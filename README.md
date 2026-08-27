@@ -25,11 +25,12 @@ When a file is added, the application calculates its SHA-256 hash and stores it 
 | Class | Responsibility |
 | --- | --- |
 | `FileIntegrityMonitor` | Console menu and user input |
-| `FileMonitorManager` | Add, list, check, and remove monitored files |
+| `FileMonitorManager` | Add, list, check, update, and remove monitored files |
 | `MonitoredFile` | Stores a file path and its original hash |
 | `HashUtility` | Calculates SHA-256 file hashes |
 | `StorageUtility` | Saves and reloads monitored files locally |
 | `HashUtilityTest` | Verifies SHA-256 hashing behaviour using JUnit 5 |
+| `StorageUtilityTest` | Verifies saving and loading monitored-file records |
 
 ## Requirements
 
@@ -58,7 +59,7 @@ Apache NetBeans is optional. The project follows Maven's standard directory layo
 
 ## Testing
 
-The project includes JUnit 5 unit tests for `HashUtility`.
+The project includes JUnit 5 tests for `HashUtility` and `StorageUtility`.
 
 The tests verify that:
 
@@ -66,6 +67,10 @@ The tests verify that:
 - Known text produces the expected SHA-256 hash.
 - Modifying file contents produces a different hash.
 - Hashing a missing file throws the expected exception.
+- Saving a monitored-file record produces the expected storage format.
+- Loading a stored record reconstructs the expected `MonitoredFile`.
+- Loading a missing storage file returns an empty list.
+- Multiple records survive a save-and-load round trip.
 
 Run all tests with:
 
@@ -73,7 +78,7 @@ Run all tests with:
 mvn test
 ```
 
-A successful run reports four tests with no failures or errors.
+A successful run reports eight tests with no failures or errors.
 
 ## Notes
 
@@ -86,9 +91,7 @@ A successful run reports four tests with no failures or errors.
 unchanged.txt is unchanged.
 modified.txt has been modified.
 deleted.txt is missing or inaccessible.
-```
 
-```text
 The file has been modified.
 Baseline hash updated for baseline-text.txt.
 The file is unchanged.
