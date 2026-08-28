@@ -13,7 +13,7 @@ import java.util.logging.Level;
 
 public class StorageUtility {
 
-    private static final Path STORAGE_FILE = Path.of("monitored-files.txt");
+    static final Path STORAGE_FILE = Path.of("monitored-files.txt");
     private static final Logger log = Logger.getLogger(StorageUtility.class.getName());
 
     public static void saveFiles(ArrayList<MonitoredFile> fileList) throws Exception{
