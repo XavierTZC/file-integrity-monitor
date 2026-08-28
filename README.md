@@ -31,6 +31,7 @@ When a file is added, the application calculates its SHA-256 hash and stores it 
 | `StorageUtility` | Saves and reloads monitored files locally |
 | `HashUtilityTest` | Verifies SHA-256 hashing behaviour using JUnit 5 |
 | `StorageUtilityTest` | Verifies saving and loading monitored-file records |
+| `FileMonitorManagerTest` | Verifies manager behavior and persisted baseline changes |
 
 ## Requirements
 
@@ -59,7 +60,7 @@ Apache NetBeans is optional. The project follows Maven's standard directory layo
 
 ## Testing
 
-The project includes JUnit 5 tests for `HashUtility` and `StorageUtility`.
+The project includes JUnit 5 tests for `HashUtility`, `StorageUtility`, and `FileMonitorManager`.
 
 The tests verify that:
 
@@ -71,6 +72,12 @@ The tests verify that:
 - Loading a stored record reconstructs the expected `MonitoredFile`.
 - Loading a missing storage file returns an empty list.
 - Multiple records survive a save-and-load round trip.
+- Adding a file persists its path and baseline hash.
+- Re-adding the same path preserves the original trusted baseline.
+- Removing a monitored file removes its persisted record.
+- Updating a baseline persists the file's new hash.
+- Integrity checks identify unchanged and modified files.
+- Unmonitored paths are rejected before the program attempts to read them.
 
 Run all tests with:
 
@@ -78,7 +85,7 @@ Run all tests with:
 mvn test
 ```
 
-A successful run reports eight tests with no failures or errors.
+A successful run reports sixteen tests with no failures or errors.
 
 ## Notes
 
