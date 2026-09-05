@@ -137,17 +137,9 @@ public class FileMonitorManagerTest {
         FileMonitorManager manager = new FileMonitorManager(storagePath);
         manager.addFile(monitoredPath.toString());
 
-        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
-        PrintStream originalOutput = System.out;
+        IntegrityStatus actualStatus = manager.checkFile(monitoredPath.toString());
 
-        try {
-            System.setOut(new PrintStream(capturedOutput));
-            manager.checkFile(monitoredPath.toString());
-        } finally {
-            System.setOut(originalOutput);
-        }
-
-        assertEquals("The file is unchanged." + System.lineSeparator(), capturedOutput.toString());
+        assertEquals(IntegrityStatus.UNCHANGED, actualStatus);
     }
 
     @Test
@@ -163,17 +155,9 @@ public class FileMonitorManagerTest {
 
         Files.writeString(monitoredPath, "Modified Hello World!");
 
-        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
-        PrintStream originalOutput = System.out;
+        IntegrityStatus actualStatus = manager.checkFile(monitoredPath.toString());
 
-        try {
-            System.setOut(new PrintStream(capturedOutput));
-            manager.checkFile(monitoredPath.toString());
-        } finally {
-            System.setOut(originalOutput);
-        }
-
-        assertEquals("The file has been modified." + System.lineSeparator(), capturedOutput.toString());
+        assertEquals(IntegrityStatus.MODIFIED, actualStatus);
     }
 
     @Test
@@ -186,18 +170,9 @@ public class FileMonitorManagerTest {
 
         FileMonitorManager manager = new FileMonitorManager(storagePath);
 
-        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
-        PrintStream originalOutput = System.out;
+        IntegrityStatus actualStatus = manager.checkFile(monitoredPath.toString());
 
-        try {
-
-            System.setOut(new PrintStream(capturedOutput));
-            manager.checkFile(monitoredPath.toString());
-        } finally {
-            System.setOut(originalOutput);
-        }
-
-        assertEquals("This file is not being monitored." + System.lineSeparator(), capturedOutput.toString());
+        assertEquals(IntegrityStatus.NOT_MONITORED, actualStatus);
     }
 
     @Test
@@ -208,18 +183,9 @@ public class FileMonitorManagerTest {
 
         FileMonitorManager manager = new FileMonitorManager(storagePath);
 
-        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
-        PrintStream originalOutput = System.out;
+        IntegrityStatus actualStatus = manager.checkFile(missingPath.toString());
 
-        try {
-
-            System.setOut(new PrintStream(capturedOutput));
-            manager.checkFile(missingPath.toString());
-        } finally {
-            System.setOut(originalOutput);
-        }
-
-        assertEquals("This file is not being monitored." + System.lineSeparator(), capturedOutput.toString());
+        assertEquals(IntegrityStatus.NOT_MONITORED, actualStatus);
     }
 
     @Test
@@ -277,19 +243,9 @@ public class FileMonitorManagerTest {
         Path storagePath = tempDirectory.resolve("storage.txt");
         FileMonitorManager manager = new FileMonitorManager(storagePath);
 
-        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
-        PrintStream originalOutput = System.out;
+        ArrayList<IntegrityCheckResult> results = manager.checkAllFiles();
 
-        try{
-            System.setOut(new PrintStream(capturedOutput));
-            manager.checkAllFiles();
-        } finally {
-            System.setOut(originalOutput);
-        }
-
-        String expectedOutput = "There are no monitored files." + System.lineSeparator();
-
-        assertEquals(expectedOutput,capturedOutput.toString());
+        assertTrue(results.isEmpty());
     }
 
     @Test
@@ -313,22 +269,18 @@ public class FileMonitorManagerTest {
         Files.writeString(modifiedPath,"modified content.");
         Files.delete(missingPath);
 
-        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
-        PrintStream originalOutput = System.out;
+        ArrayList<IntegrityCheckResult> results = manager.checkAllFiles();
 
-        try {
-            System.setOut(new PrintStream(capturedOutput));
-            manager.checkAllFiles();
-        } finally {
-            System.setOut(originalOutput);
-        }
+        assertEquals(3, results.size());
 
-        String expectedOutput =
-                    unchangedPath + " is unchanged." + System.lineSeparator()
-                    + modifiedPath + " has been modified." + System.lineSeparator()
-                    + missingPath + " is missing or inaccessible." + System.lineSeparator();
+        assertEquals(unchangedPath.toString(), results.get(0).filePath());
+        assertEquals(IntegrityStatus.UNCHANGED, results.get(0).status());
 
-        assertEquals(expectedOutput, capturedOutput.toString());
+        assertEquals(modifiedPath.toString(), results.get(1).filePath());
+        assertEquals(IntegrityStatus.MODIFIED, results.get(1).status());
+
+        assertEquals(missingPath.toString(), results.get(2).filePath());
+        assertEquals(IntegrityStatus.MISSING_OR_INACCESSIBLE, results.get(2).status());
     }
 
     @Test
@@ -388,18 +340,8 @@ public class FileMonitorManagerTest {
 
         Files.delete(monitoredPath);
 
-        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
-        PrintStream originalOutput = System.out;
+        IntegrityStatus actualStatus = manager.checkFile(monitoredPath.toString());
 
-        try {
-            System.setOut(new PrintStream(capturedOutput));
-            manager.checkFile(monitoredPath.toString());
-        } finally {
-            System.setOut(originalOutput);
-        }
-
-        String expectedOutput =  "The file is missing or inaccessible." + System.lineSeparator();
-
-        assertEquals(expectedOutput,capturedOutput.toString());
+        assertEquals(IntegrityStatus.MISSING_OR_INACCESSIBLE, actualStatus);
     }
 }

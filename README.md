@@ -32,6 +32,8 @@ When a file is added, the application calculates its SHA-256 hash and stores it 
 | `HashUtilityTest` | Verifies SHA-256 hashing behaviour using JUnit 5 |
 | `StorageUtilityTest` | Verifies saving and loading monitored-file records |
 | `FileMonitorManagerTest` | Verifies manager behavior and persisted baseline changes |
+| `IntegrityStatus` | Represents the possible integrity-check outcomes |
+| `IntegrityCheckResult` | Pairs a monitored file path with its integrity status |
 
 ## Requirements
 
