@@ -44,30 +44,16 @@ public class FileMonitorManager {
         }
     }
 
-    public void checkFile(String filePath) throws Exception{
+    public IntegrityStatus checkFile(String filePath){
 
         for (MonitoredFile oneFile: fileList){
 
             if(oneFile.getFilePath().equals(filePath)){
-
-                try{
-                    String hash = HashUtility.calculateSHA256(filePath);
-
-                    if(oneFile.getOriginalHash().equals(hash)){
-                        System.out.println("The file is unchanged.");
-                        return;
-                    }else{
-                        System.out.println("The file has been modified.");
-                        return;
-                    }
-                }catch (Exception e){
-                    System.out.println("The file is missing or inaccessible.");
-                }
-
-                return;
+                return determineIntegrityStatus(oneFile);
             }
         }
-        System.out.println("This file is not being monitored.");
+
+        return IntegrityStatus.NOT_MONITORED;
     }
 
     public void removeFile(String filePath){
@@ -93,28 +79,19 @@ public class FileMonitorManager {
         System.out.println("File is not found in the list.");
     }
 
-    public void checkAllFiles() {
-        if (fileList.isEmpty()) {
-            System.out.println("There are no monitored files.");
-            return;
+    public ArrayList<IntegrityCheckResult> checkAllFiles() {
+
+        ArrayList<IntegrityCheckResult> results = new ArrayList<>();
+
+        for(MonitoredFile oneFile: fileList){
+            IntegrityStatus status = determineIntegrityStatus(oneFile);
+
+            IntegrityCheckResult result = new IntegrityCheckResult(oneFile.getFilePath(),status);
+
+            results.add(result);
         }
 
-        for (MonitoredFile oneFile : fileList) {
-            String filePath = oneFile.getFilePath();
-
-            try {
-                String hash = HashUtility.calculateSHA256(filePath);
-
-                if (oneFile.getOriginalHash().equals(hash)) {
-                    System.out.println(filePath + " is unchanged.");
-                } else {
-                    System.out.println(filePath + " has been modified.");
-                }
-
-            } catch (Exception e) {
-                System.out.println(filePath + " is missing or inaccessible.");
-            }
-        }
+        return results;
     }
 
     public void updateFileHash(String filePath) throws Exception{
@@ -133,6 +110,21 @@ public class FileMonitorManager {
         }
 
         System.out.println("The file is not in the monitored list.");
+    }
+
+    private IntegrityStatus determineIntegrityStatus(MonitoredFile monitoredFile){
+
+        try{
+            String currentHash = HashUtility.calculateSHA256(monitoredFile.getFilePath());
+
+            if(monitoredFile.getOriginalHash().equals(currentHash)){
+                return IntegrityStatus.UNCHANGED;
+            } else{
+                return IntegrityStatus.MODIFIED;
+            }
+        } catch (Exception e){
+            return IntegrityStatus.MISSING_OR_INACCESSIBLE;
+        }
     }
 }
 
