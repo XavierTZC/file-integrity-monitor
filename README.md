@@ -78,6 +78,10 @@ The tests verify that:
 - Updating a baseline persists the file's new hash.
 - Integrity checks identify unchanged and modified files.
 - Unmonitored paths are rejected before the program attempts to read them.
+- Empty and populated monitoring lists produce the expected output.
+- Checking all files reports unchanged, modified, and missing files.
+- Unmonitored removal and baseline-update requests are handled safely.
+- A monitored file that is later deleted is reported as missing or inaccessible.
 
 Run all tests with:
 
@@ -85,7 +89,7 @@ Run all tests with:
 mvn test
 ```
 
-A successful run reports sixteen tests with no failures or errors.
+A successful run reports 23 tests with no failures or errors.
 
 ## Notes
 

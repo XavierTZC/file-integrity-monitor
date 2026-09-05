@@ -221,4 +221,185 @@ public class FileMonitorManagerTest {
 
         assertEquals("This file is not being monitored." + System.lineSeparator(), capturedOutput.toString());
     }
+
+    @Test
+    public void listFiles_emptyList_printsEmptyMessage(){
+
+        Path storagePath = tempDirectory.resolve("storage.txt");
+        FileMonitorManager manager = new FileMonitorManager(storagePath);
+
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        PrintStream originalOutput = System.out;
+
+        try{
+            System.setOut(new PrintStream(capturedOutput));
+            manager.listFiles();
+        }finally{
+            System.setOut(originalOutput);
+        }
+
+        assertEquals("There is nothing in the list." + System.lineSeparator(),capturedOutput.toString());
+    }
+
+    @Test
+    public void listFiles_oneFile_printsMonitoredFile() throws Exception{
+
+        Path storagePath = tempDirectory.resolve("storage.txt");
+        Path monitoredPath = tempDirectory.resolve("example.txt");
+
+        Files.writeString(monitoredPath, "Hello World!");
+
+        FileMonitorManager manager = new FileMonitorManager(storagePath);
+        manager.addFile(monitoredPath.toString());
+
+        String expectedHash = HashUtility.calculateSHA256(monitoredPath.toString());
+
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        PrintStream originalOutput = System.out;
+
+        try{
+            System.setOut(new PrintStream(capturedOutput));
+            manager.listFiles();
+        }finally{
+            System.setOut(originalOutput);
+        }
+
+        String expectedOutput = "MonitoredFile{filePath=" + monitoredPath
+                                + ", originalHash=" + expectedHash + "}"
+                                + System.lineSeparator();
+
+        assertEquals(expectedOutput, capturedOutput.toString());
+    }
+
+    @Test
+    public void checkAllFiles_emptyList_printsNoFilesMessage(){
+
+        Path storagePath = tempDirectory.resolve("storage.txt");
+        FileMonitorManager manager = new FileMonitorManager(storagePath);
+
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        PrintStream originalOutput = System.out;
+
+        try{
+            System.setOut(new PrintStream(capturedOutput));
+            manager.checkAllFiles();
+        } finally {
+            System.setOut(originalOutput);
+        }
+
+        String expectedOutput = "There are no monitored files." + System.lineSeparator();
+
+        assertEquals(expectedOutput,capturedOutput.toString());
+    }
+
+    @Test
+    public void checkAllFiles_mixedFiles_printsEachStatus() throws Exception{
+
+        Path unchangedPath = tempDirectory.resolve("unchanged.txt");
+        Path modifiedPath = tempDirectory.resolve("modified.txt");
+        Path missingPath = tempDirectory.resolve("missing.txt");
+
+        Files.writeString(unchangedPath, "unchanged content");
+        Files.writeString(modifiedPath, "original content");
+        Files.writeString(missingPath, "temporary content");
+
+        Path storagePath = tempDirectory.resolve("storage.txt");
+        FileMonitorManager manager = new FileMonitorManager(storagePath);
+
+        manager.addFile(unchangedPath.toString());
+        manager.addFile(modifiedPath.toString());
+        manager.addFile(missingPath.toString());
+
+        Files.writeString(modifiedPath,"modified content.");
+        Files.delete(missingPath);
+
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        PrintStream originalOutput = System.out;
+
+        try {
+            System.setOut(new PrintStream(capturedOutput));
+            manager.checkAllFiles();
+        } finally {
+            System.setOut(originalOutput);
+        }
+
+        String expectedOutput =
+                    unchangedPath + " is unchanged." + System.lineSeparator()
+                    + modifiedPath + " has been modified." + System.lineSeparator()
+                    + missingPath + " is missing or inaccessible." + System.lineSeparator();
+
+        assertEquals(expectedOutput, capturedOutput.toString());
+    }
+
+    @Test
+    public void removeFile_unmonitoredFile_printsNotFoundMessage() {
+
+        Path unmonitoredPath = tempDirectory.resolve("unmonitored.txt");
+        Path storagePath = tempDirectory.resolve("storage.txt");
+
+        FileMonitorManager manager = new FileMonitorManager(storagePath);
+
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        PrintStream originalOutput = System.out;
+
+        try {
+            System.setOut(new PrintStream(capturedOutput));
+            manager.removeFile(unmonitoredPath.toString());
+        } finally {
+            System.setOut(originalOutput);
+        }
+
+        String expectedOutput = "File is not found in the list." + System.lineSeparator();
+
+        assertEquals(expectedOutput,capturedOutput.toString());
+    }
+
+    @Test
+    public void updateFileHash_unmonitoredFile_printsNotMonitoredMessage() throws Exception {
+        Path unmonitoredPath = tempDirectory.resolve("unmonitored.txt");
+        Path storagePath = tempDirectory.resolve("storage.txt");
+
+        FileMonitorManager manager = new FileMonitorManager(storagePath);
+
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        PrintStream originalOutput = System.out;
+
+        try {
+            System.setOut(new PrintStream(capturedOutput));
+            manager.updateFileHash(unmonitoredPath.toString());
+        } finally {
+            System.setOut(originalOutput);
+        }
+
+        String expectedOutput = "The file is not in the monitored list." + System.lineSeparator();
+
+        assertEquals(expectedOutput,capturedOutput.toString());
+    }
+
+    @Test
+    public void checkFile_monitoredFileDeleted_printsMissingMessage() throws Exception{
+        Path monitoredPath = tempDirectory.resolve("monitored.txt");
+        Path storagePath = tempDirectory.resolve("storage.txt");
+
+        Files.writeString(monitoredPath, "Hello World!");
+
+        FileMonitorManager manager = new FileMonitorManager(storagePath);
+        manager.addFile(monitoredPath.toString());
+
+        Files.delete(monitoredPath);
+
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        PrintStream originalOutput = System.out;
+
+        try {
+            System.setOut(new PrintStream(capturedOutput));
+            manager.checkFile(monitoredPath.toString());
+        } finally {
+            System.setOut(originalOutput);
+        }
+
+        String expectedOutput =  "The file is missing or inaccessible." + System.lineSeparator();
+
+        assertEquals(expectedOutput,capturedOutput.toString());
+    }
 }

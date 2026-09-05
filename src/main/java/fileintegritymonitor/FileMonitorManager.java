@@ -48,18 +48,23 @@ public class FileMonitorManager {
 
         for (MonitoredFile oneFile: fileList){
 
-            String hash = HashUtility.calculateSHA256(filePath);
-
             if(oneFile.getFilePath().equals(filePath)){
 
-                if(oneFile.getOriginalHash().equals(hash)){
-                    System.out.println("The file is unchanged.");
-                    return;
+                try{
+                    String hash = HashUtility.calculateSHA256(filePath);
 
-                }else{
-                    System.out.println("The file has been modified.");
-                    return;
+                    if(oneFile.getOriginalHash().equals(hash)){
+                        System.out.println("The file is unchanged.");
+                        return;
+                    }else{
+                        System.out.println("The file has been modified.");
+                        return;
+                    }
+                }catch (Exception e){
+                    System.out.println("The file is missing or inaccessible.");
                 }
+
+                return;
             }
         }
         System.out.println("This file is not being monitored.");
