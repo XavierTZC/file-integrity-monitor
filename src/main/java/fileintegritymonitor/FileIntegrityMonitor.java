@@ -2,7 +2,8 @@ package fileintegritymonitor;
 
 import java.util.Scanner;
 import java.util.ArrayList;
-
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
 public class FileIntegrityMonitor {
 
 
@@ -39,7 +40,7 @@ public class FileIntegrityMonitor {
                                 String filePath = sc.nextLine();
                                 try{
                                     fileMonitorManager.addFile(filePath);
-                                }catch (Exception e){
+                                }catch (IOException e){
                                     System.out.println("Unable to process that file. Check the path and try again.");
                                 }
                 }
@@ -83,7 +84,7 @@ public class FileIntegrityMonitor {
                                 String filePath = sc.nextLine();
                                 try{
                                     fileMonitorManager.updateFileHash(filePath);
-                                }catch (Exception e){
+                                }catch (IOException e){
                                     System.out.println("Unable to process that file. Check the path and try again.");
                                 }
                 }
@@ -91,7 +92,7 @@ public class FileIntegrityMonitor {
                                 String filePath = sc.nextLine();
                                 try{
                                     fileMonitorManager.removeFile(filePath);
-                                }catch (Exception e){
+                                }catch (InvalidPathException e){
                                     System.out.println("Unable to process that file. Check the path and try again.");
                                 }
                 }

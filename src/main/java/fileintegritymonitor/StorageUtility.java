@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import java.util.Scanner;
 import java.util.logging.Logger;
@@ -16,13 +17,13 @@ public class StorageUtility {
     static final Path STORAGE_FILE = Path.of("monitored-files.txt");
     private static final Logger log = Logger.getLogger(StorageUtility.class.getName());
 
-    public static void saveFiles(ArrayList<MonitoredFile> fileList) throws Exception{
+    public static void saveFiles(ArrayList<MonitoredFile> fileList) throws IOException{
 
         saveFiles(fileList, STORAGE_FILE);
 
     }
 
-    static void saveFiles(ArrayList<MonitoredFile> fileList, Path storageFile) throws Exception{
+    static void saveFiles(ArrayList<MonitoredFile> fileList, Path storageFile) throws IOException{
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(storageFile.toFile()))){
             for(MonitoredFile oneFile: fileList){
