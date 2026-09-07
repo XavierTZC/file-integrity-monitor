@@ -2,6 +2,7 @@ package fileintegritymonitor;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class FileMonitorManager {
 
@@ -17,7 +18,7 @@ public class FileMonitorManager {
         this.fileList = StorageUtility.loadFiles(storagePath);
     }
 
-    public void addFile(String filePath) throws Exception{
+    public void addFile(String filePath) throws IOException{
         for (MonitoredFile oneFile : fileList) {
             if (oneFile.getFilePath().equals(filePath)) {
                 System.out.println("This file is already being monitored.");
@@ -67,7 +68,7 @@ public class FileMonitorManager {
 
                 try{
                     StorageUtility.saveFiles(fileList,storagePath);
-                }catch (Exception e){
+                }catch (IOException e){
                     System.out.println("File was removed in memory, but changes could not be saved.");
                 }
 
@@ -94,7 +95,7 @@ public class FileMonitorManager {
         return results;
     }
 
-    public void updateFileHash(String filePath) throws Exception{
+    public void updateFileHash(String filePath) throws IOException{
 
         for (MonitoredFile oneFile : fileList){
 
@@ -122,7 +123,7 @@ public class FileMonitorManager {
             } else{
                 return IntegrityStatus.MODIFIED;
             }
-        } catch (Exception e){
+        } catch (IOException e){
             return IntegrityStatus.MISSING_OR_INACCESSIBLE;
         }
     }
