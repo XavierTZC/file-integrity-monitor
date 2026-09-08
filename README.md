@@ -55,7 +55,7 @@ Apache NetBeans is optional. The project follows Maven's standard directory layo
 4. Run the packaged application:
 
    ```text
-   java -jar target/file-integrity-monitor-1.0.0-SNAPSHOT.jar
+   java -jar target/file-integrity-monitor-1.0.0.jar
    ```
 
 5. Select an option from the console menu and enter a path to a file you own or are authorized to monitor.
@@ -93,6 +93,14 @@ mvn test
 
 A successful run reports 23 tests with no failures or errors.
 
+## Security limitations
+
+- Integrity checks run only when requested; the application does not monitor files continuously.
+- Baseline hashes are stored locally in plaintext and are not authenticated.
+- An attacker who can modify both a monitored file and `monitored-files.txt` could replace the stored baseline and evade detection.
+- The application detects and reports changes but does not prevent, repair, quarantine, or attribute them.
+- This educational project is not a replacement for production endpoint-monitoring or file-integrity software.
+
 ## Notes
 
 - `monitored-files.txt` is created automatically to store local monitoring data and is intentionally excluded from Git.
@@ -109,3 +117,7 @@ The file has been modified.
 Baseline hash updated for baseline-text.txt.
 The file is unchanged.
 ```
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
